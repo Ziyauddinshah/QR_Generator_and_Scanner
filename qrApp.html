@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Generator with QR Code & Logo</title>
+  <!-- Include required libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsqr.min.js"></script>
+  <link rel="stylesheet" href="qrApp.css">
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>PDF Generator with QR Code</h1>
+      <p>Create professional PDF documents with embedded QR codes and your custom logo</p>
+      <button id="theme-toggle" class="btn">
+        <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M21 13h-4v-4h4v4zm-6-2h-4v4h4v-4zm-6 6h-4v4h4v-4zm16-8.944A9 9 0 0017.944 3H14.98a6 6 0 01-5.96 0H5.056A9 9 0 003 11.056v1.888A9 9 0 005.056 21.002h3.964a6 6 0 015.96 0h3.964A9 9 0 0021 12.944v-1.888z"
+            fill="currentColor" />
+        </svg>
+        Dark Mode
+      </button>
+    </header>
+
+    <div class="app-container">
+      <div class="panel">
+        <h2 class="panel-title">Create Your Document</h2>
+
+        <div class="logo-section">
+          <div class="logo-preview-container">
+            <img id="logoPreview" alt="Logo Preview">
+            <div class="placeholder-text">Your Logo Here</div>
+          </div>
+          <button id="uploadLogoBtn" class="btn btn-outline">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M17 8L12 3L7 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M12 3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+            Upload Logo
+          </button>
+          <input type="file" id="logoUpload" accept="image/png, image/jpeg">
+        </div>
+
+        <div class="input-group">
+          <label for="dataInput">Document Content</label>
+          <textarea id="dataInput" placeholder="Enter your document content here..."></textarea>
+        </div>
+
+        <button id="generateBtn" class="btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <path d="M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          Generate PDF
+        </button>
+
+        <div id="qrCode"></div>
+
+        <div class="instructions">
+          <h3><span class="info-icon">i</span> How to Use</h3>
+          <ul>
+            <li>Upload your logo (PNG or JPG)</li>
+            <li>Enter the content for your document</li>
+            <li>Click "Generate PDF" to create your document</li>
+            <li>Scan the QR code to verify the document content</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 class="panel-title">Document Preview</h2>
+        <div class="instructions">
+          <h3><span class="info-icon">i</span>Generated PDF will include:</h3>
+          <ul>
+            <li>Your company logo at the top</li>
+            <li>The data you entered</li>
+            <li>A QR code containing your data</li>
+            <li>Professional formatting</li>
+          </ul>
+        </div>
+
+        <div id="pdfPreview" class="pdf-preview">
+          <div
+            style="text-align: center; padding: 20px; border: 1px solid var(--border-color); background: var(--bg-panel);">
+            <img src="https://via.placeholder.com/150x100/4e54c8/ffffff?text=Your+Logo" alt="Logo"
+              style="height: 60px; margin-bottom: 20px;">
+            <h2 style="color: var(--accent-primary); margin-bottom: 10px;">Official Document</h2>
+            <hr
+              style="border-top: var(--line-border); margin-bottom: 20px; width: 80%; margin-left: auto; margin-right: auto;">
+            <h3 style="color: var(--text-primary); margin-bottom: 10px; text-align: left;">Document Content:</h3>
+            <p style="text-align: left; margin-bottom: 30px; white-space: pre-wrap;">Enter your document content above
+              to see a preview here...</p>
+            <div
+              style="width: 150px; height: 150px; margin: 0 auto 10px; background: var(--logo-preview-bg); display: flex; align-items: center; justify-content: center; color: var(--text-secondary);">
+              QR Code Preview
+            </div>
+            <p style="color: var(--text-secondary); font-size: 12px;">Scan the QR code to verify this document</p>
+          </div>
+        </div>
+
+        <h3 class="panel-title" style="margin-top: 30px;">QR Code Scanner</h3>
+        <div class="instructions">
+          <h3><span class="info-icon">i</span> Scanning instructions:</h3>
+          <ul>
+            <li>Click "Start Camera" to enable your camera</li>
+            <li>Position the QR code in the center frame</li>
+            <li>The scanned data will appear automatically</li>
+            <li>Click "Stop Camera" when finished</li>
+          </ul>
+        </div>
+
+        <button id="startCamera" class="btn btn-outline">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M2 12H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M18 12H22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M12 6V2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M12 22V18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          Start Camera
+        </button>
+
+        <div class="scan-area" id="scanArea">
+          <video id="video"></video>
+        </div>
+
+        <div class="result-section">
+          <h3>Scanned Content:</h3>
+          <div id="result">No QR code scanned yet</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="statusMessage" class="status-message"></div>
+  </div>
+
+  <script src="qrApp.js"></script>
+</body>
+
+</html>
